@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg-primary: #1a1a2e;
+      --bg-secondary: #16213e;
+      --bg-tertiary: #0f3460;
+      --text-primary: #e0e0e0;
+      --text-secondary: #888;
+      --text-highlight: #fff;
+      --border-color: #0f3460;
+      --accent: #4a9eff;
+      --accent-hover: #1a4a8a;
+      --code-bg: #0d1b3e;
+      --error: #ff6b6b;
+      --tab-inactive: #888;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f5f5f5;
+        --bg-tertiary: #e0e0e0;
+        --text-primary: #333333;
+        --text-secondary: #777777;
+        --text-highlight: #000000;
+        --border-color: #cccccc;
+        --accent: #1a73e8;
+        --accent-hover: #1557b0;
+        --code-bg: #f0f0f0;
+        --error: #d93025;
+        --tab-inactive: #888;
+      }
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 520px;
+      min-height: 200px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 13px;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+    #app { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+    h1 { font-size: 16px; color: var(--text-highlight); }
+    #status {
+      padding: 10px;
+      background: var(--bg-secondary);
+      border-radius: 6px;
+      text-align: center;
+      color: var(--text-secondary);
+    }
+    #status.error { color: var(--error); }
+    select {
+      width: 100%;
+      height: 200px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 4px;
+      font-size: 12px;
+    }
+    select option { padding: 6px 8px; }
+    select option:checked { background: var(--bg-tertiary); }
+    button {
+      padding: 8px 16px;
+      background: var(--bg-tertiary);
+      color: var(--text-highlight);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    button:hover { background: var(--accent-hover); color: #fff; }
+    #exportBtn { align-self: flex-start; }
+    textarea {
+      width: 100%;
+      height: 350px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 8px;
+      font-family: 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 11px;
+      resize: vertical;
+    }
+    .hidden { display: none !important; }
+
+    #transformOptions {
+      display: flex; gap: 16px; padding: 6px 0;
+    }
+    #transformOptions label {
+      display: flex; align-items: center; gap: 5px;
+      cursor: pointer; color: var(--text-primary); font-size: 12px;
+      user-select: none;
+    }
+    #transformOptions input { accent-color: var(--accent); }
+
+    #outputArea { display: flex; flex-direction: column; gap: 8px; }
+    #tabBar { display: flex; gap: 0; border-bottom: 2px solid var(--border-color); }
+    #tabBar .tab {
+      padding: 6px 18px;
+      background: transparent;
+      color: var(--tab-inactive);
+      border: none;
+      border-radius: 0;
+      cursor: pointer;
+      font-size: 13px;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+    }
+    #tabBar .tab.active {
+      color: var(--text-highlight);
+      border-bottom-color: var(--accent);
+    }
+    #buttonRow { display: flex; gap: 8px; }
+
+    .content-panel {
+      width: 100%;
+      height: 350px;
+      overflow: auto;
+    }
+    #outputMd {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    #outputMd h1, #outputMd h2, #outputMd h3, #outputMd h4 {
+      color: var(--text-highlight);
+      margin: 1em 0 0.5em;
+    }
+    #outputMd h2 { font-size: 1.2em; border-bottom: 1px solid var(--border-color); padding-bottom: 4px; }
+    #outputMd p { margin: 0.5em 0; }
+    #outputMd code {
+      background: var(--bg-tertiary);
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-size: 0.9em;
+    }
+    #outputMd pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 10px;
+      overflow-x: auto;
+    }
+    #outputMd pre code { background: none; padding: 0; }
+    #outputMd hr { border: none; border-top: 1px solid var(--border-color); margin: 1em 0; }
+    #outputMd a { color: var(--accent); }
+    #outputMd img { max-width: 100%; height: auto; border-radius: 4px; }
+    #outputMd details {
+      background: var(--bg-tertiary);
+      border-radius: 6px;
+      padding: 6px 10px;
+      margin: 0.5em 0;
+    }
+    #outputMd summary { cursor: pointer; font-weight: 600; color: var(--text-secondary); }
+    #outputMd blockquote {
+      border-left: 3px solid var(--accent);
+      padding-left: 10px;
+      color: var(--text-secondary);
+      margin: 0.5em 0;
+    }
+    #imageGallery {
+      display: flex; flex-wrap: wrap; gap: 8px; padding: 8px 0;
+    }
+    #imageGallery .img-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px; padding: 6px; text-align: center; width: 120px;
+    }
+    #imageGallery .img-card img {
+      width: 100%; height: 80px; object-fit: cover; border-radius: 4px; display: block;
+    }
+    #imageGallery .img-card .img-name {
+      font-size: 10px; color: var(--text-secondary); margin: 4px 0; word-break: break-all;
+    }
+    #imageGallery .img-card button {
+      font-size: 11px; padding: 3px 8px; margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1 id="heading">Chat Export</h1>
+    <div id="status">Loading...</div>
+    <select id="chatSelect" class="hidden" multiple></select>
+    <button id="exportBtn" class="hidden">Export Selected</button>
+    <div id="outputArea" class="hidden">
+      <div id="transformOptions">
+        <label><input type="checkbox" id="unboldHeadings" checked> Unbold headings</label>
+        <label><input type="checkbox" id="stripHtml" checked> Strip HTML tags</label>
+        <label><input type="checkbox" id="mdLinks" checked> Markdownify ChatGPT link format</label>
+      </div>
+      <div id="tabBar">
+        <button class="tab active" data-tab="json">JSON</button>
+        <button class="tab" data-tab="md">Markdown</button>
+      </div>
+      <textarea id="outputJson" class="content-panel" readonly></textarea>
+      <div id="outputMd" class="content-panel hidden"></div>
+      <div id="buttonRow">
+        <button id="copyBtn">Copy JSON</button>
+        <button id="saveBtn">Save JSON</button>
+        <button id="zipBtn" class="hidden">Download ZIP</button>
+      </div>
+      <div id="imageGallery" class="hidden"></div>
+    </div>
+  </div>
+  <script src="marked.min.js"></script>
+  <script src="jszip.min.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
