@@ -1,6 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Chat Export",
+  "author": "uukelele",
   "version": "1.0.0",
   "homepage_url": "https://github.com/uukelele/chat-export",
   "description": "Export chats from web chatbots. Currently supports ChatGPT and DeepSeek.",
